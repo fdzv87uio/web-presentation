@@ -83,12 +83,12 @@ const PoseEstimation = observer(() => {
       architecture: "MobileNetV1",
       outputStride: 16,
       inputResolution: 257,
-      multiplier: 0.75,
+      multiplier: 0.5,
     })
 
     setInterval(() => {
       detect(net)
-    }, 1000)
+    }, 100)
   }
 
   const detect = async net => {
@@ -125,32 +125,6 @@ const PoseEstimation = observer(() => {
 
   return (
     <WelcomePages>
-      {permissionGranted === true ? (
-        <Canvas
-          style={{
-            position: "absolute",
-            marginLeft: "auto",
-            marginRight: "auto",
-            left: 0,
-            right: 0,
-            textAlign: "center",
-            zIndex: 9,
-          }}
-          width={400}
-          height={400}
-          dpr={1}
-          isAnimating={true}
-        >
-          <OrientationAxis
-            beta={deviceOrientation?.beta}
-            gamma={deviceOrientation?.gamma}
-          ></OrientationAxis>
-        </Canvas>
-      ) : (
-        <Button onClick={grantPermissionForDeviceOrientation}>
-          Authorize Orientation
-        </Button>
-      )}
       <S.PageWrapper>
         {typeof window !== "undefined" &&
         typeof window.navigator !== "undefined" ? (
@@ -181,6 +155,32 @@ const PoseEstimation = observer(() => {
           />
         ) : null}
       </S.PageWrapper>
+      {permissionGranted === true ? (
+        <Canvas
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            zIndex: 9,
+          }}
+          width={400}
+          height={400}
+          dpr={1}
+          isAnimating={true}
+        >
+          <OrientationAxis
+            beta={deviceOrientation?.beta}
+            gamma={deviceOrientation?.gamma}
+          ></OrientationAxis>
+        </Canvas>
+      ) : (
+        <Button onClick={grantPermissionForDeviceOrientation}>
+          Authorize Orientation
+        </Button>
+      )}
       
     </WelcomePages>
   )

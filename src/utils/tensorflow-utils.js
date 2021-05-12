@@ -129,16 +129,16 @@ export function drawKeypoints(keypoints, minConfidence, ctx, scale = 1) {
   var kp16 = keypoints[16]
 
   if (kp9.score > minConfidence) {
-    drawPoint(ctx, kp9.position.y, kp9.position.x, 20, "#ffffff")
+    drawPoint(ctx, kp9.position.y, kp9.position.x, 10, "#ffffff")
   }
   if (kp10.score > minConfidence) {
-    drawPoint(ctx, kp10.position.y, kp10.position.x, 20, "#ffffff")
+    drawPoint(ctx, kp10.position.y, kp10.position.x, 10, "#ffffff")
   }
   if (kp15.score > minConfidence) {
-    drawPoint(ctx, kp15.position.y, kp15.position.x, 20, "#ffffff")
+    drawPoint(ctx, kp15.position.y, kp15.position.x, 10, "#ffffff")
   }
   if (kp16.score > minConfidence) {
-    drawPoint(ctx, kp16.position.y, kp16.position.x, 20, "#ffffff")
+    drawPoint(ctx, kp16.position.y, kp16.position.x, 10, "#ffffff")
   }
 }
 
