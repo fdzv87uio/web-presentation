@@ -8,7 +8,7 @@ export const PageWrapper = Styled.div`
     align-items: center;
     background-color: #FFD733;
     width:100%;
-    height:800px;
+    height:100%;
 
     .camera-focus{
         border: none;

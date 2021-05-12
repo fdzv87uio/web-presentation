@@ -10,17 +10,16 @@ import WelcomePages from "../layouts/WelcomePages"
 import { observer } from "mobx-react"
 // import UserStore from "../stores/UserStore"
 import { drawKeypoints } from "../utils/tensorflow-utils"
-import { Button } from "@material-ui/core";
-import { Canvas } from "../components/Canvas/Canvas.component";
-import { OrientationAxis } from "../components/OrientationAxis/OrientationAxis.component";
+import { Button } from "@material-ui/core"
+import { Canvas } from "../components/Canvas/Canvas.component"
+import { OrientationAxis } from "../components/OrientationAxis/OrientationAxis.component"
 
 export class DeviceOrientationInfo {
-  absolute: boolean = false;
-  alpha: number | null = null;
-  beta: number | null = null;
-  gamma: number | null = null;
+  absolute: boolean = false
+  alpha: number | null = null
+  beta: number | null = null
+  gamma: number | null = null
 }
-
 
 const PoseEstimation = observer(() => {
   // refs for both the webcam and canvas components
@@ -32,52 +31,56 @@ const PoseEstimation = observer(() => {
   // const [gamma, setGamma] = useState()
 
   // Ios permission  hooks
-    const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
-    const [deviceOrientation, setDeviceOrientation] = useState<DeviceOrientationInfo>();
+  const [permissionGranted, setPermissionGranted] = useState<boolean>(false)
+  const [
+    deviceOrientation,
+    setDeviceOrientation,
+  ] = useState<DeviceOrientationInfo>()
   //Ios permission methods
   function grantPermissionForDeviceOrientation() {
-    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
-        DeviceOrientationEvent.requestPermission()
-            .then(permissionState => {
-                if (permissionState === 'granted') {
-                    setPermissionGranted(true);
-                    window.addEventListener('deviceorientation', handleDeviceOrientationEvent);
-                }
-            })
-            .catch(console.error);
+    if (typeof DeviceOrientationEvent.requestPermission === "function") {
+      DeviceOrientationEvent.requestPermission()
+        .then(permissionState => {
+          if (permissionState === "granted") {
+            setPermissionGranted(true)
+            window.addEventListener(
+              "deviceorientation",
+              handleDeviceOrientationEvent
+            )
+          }
+        })
+        .catch(console.error)
     } else {
-        // handle regular non iOS 13+ devices
-        setPermissionGranted(true);
-        window.addEventListener('deviceorientation', handleDeviceOrientationEvent);
+      // handle regular non iOS 13+ devices
+      setPermissionGranted(true)
+      window.addEventListener("deviceorientation", handleDeviceOrientationEvent)
     }
-}
+  }
 
-function handleDeviceOrientationEvent(ev: DeviceOrientationEvent) {
+  function handleDeviceOrientationEvent(ev: DeviceOrientationEvent) {
     setDeviceOrientation({
-        absolute: ev.absolute,
-        alpha: ev.alpha,
-        beta: ev.beta,
-        gamma: ev.gamma
+      absolute: ev.absolute,
+      alpha: ev.alpha,
+      beta: ev.beta,
+      gamma: ev.gamma,
     })
-}
-
+  }
 
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
-      typeof window.navigator !== "undefined" 
+      typeof window.navigator !== "undefined"
     ) {
       runPosenet()
-      
     }
   }, [])
   // //load rotation coordinates
 
   // // // load and run posenet function
 
-  async function runPosenet(){
+  async function runPosenet() {
     const net = await posenet.load({
-      architecture: 'MobileNetV1',
+      architecture: "MobileNetV1",
       outputStride: 16,
       inputResolution: 257,
       multiplier: 0.5,
@@ -120,12 +123,11 @@ function handleDeviceOrientationEvent(ev: DeviceOrientationEvent) {
     console.log(imgSrc)
   }
 
-
   return (
     <WelcomePages>
       <S.PageWrapper>
         {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined"  ? (
+        typeof window.navigator !== "undefined" ? (
           <Camera
             showFocus={true}
             front={false}
@@ -134,10 +136,9 @@ function handleDeviceOrientationEvent(ev: DeviceOrientationEvent) {
             width="400"
             height="400"
           />
-        ) :
-        null}
+        ) : null}
         {typeof window !== "undefined" &&
-        typeof window.navigator !== "undefined"  ? (
+        typeof window.navigator !== "undefined" ? (
           <canvas
             ref={canvasRef}
             style={{
@@ -152,16 +153,34 @@ function handleDeviceOrientationEvent(ev: DeviceOrientationEvent) {
               height: 400,
             }}
           />
-        ) : null}        
+        ) : null}
       </S.PageWrapper>
-      { permissionGranted === true ? 
-              <Canvas width={400} height={400} dpr={1} isAnimating={true}>
-                  <OrientationAxis beta={deviceOrientation?.beta} gamma={deviceOrientation?.gamma}></OrientationAxis>
-              </Canvas>
- : 
-    <Button onClick={grantPermissionForDeviceOrientation}>Authorize Orientation</Button>
-  }
-      
+      {permissionGranted === true ? (
+        <Canvas
+          style={{
+            position: "absolute",
+            marginLeft: "auto",
+            marginRight: "auto",
+            left: 0,
+            right: 0,
+            textAlign: "center",
+            zIndex: 9,
+          }}
+          width={400}
+          height={400}
+          dpr={1}
+          isAnimating={true}
+        >
+          <OrientationAxis
+            beta={deviceOrientation?.beta}
+            gamma={deviceOrientation?.gamma}
+          ></OrientationAxis>
+        </Canvas>
+      ) : (
+        <Button onClick={grantPermissionForDeviceOrientation}>
+          Authorize Orientation
+        </Button>
+      )}
     </WelcomePages>
   )
 })
