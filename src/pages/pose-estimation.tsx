@@ -88,7 +88,7 @@ const PoseEstimation = observer(() => {
 
     setInterval(() => {
       detect(net)
-    }, 100)
+    }, 777)
   }
 
   const detect = async net => {
