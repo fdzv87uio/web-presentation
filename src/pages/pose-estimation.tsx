@@ -58,8 +58,8 @@ const PoseEstimation = observer(() => {
     ) {
       // Get Video Properties
       const video = camRef.current.camRef.current
-      const videoWidth = 320
-      const videoHeight = 600
+      const videoWidth = 350
+      const videoHeight = 350
 
       // Make detections
       const pose = await net.estimateSinglePose(video)
@@ -92,8 +92,8 @@ const PoseEstimation = observer(() => {
             front={false}
             capture={capture}
             ref={camRef}
-            width="320"
-            height="600"
+            width="350"
+            height="350"
           />
         ) :
         null}
@@ -109,8 +109,8 @@ const PoseEstimation = observer(() => {
               right: 0,
               textAlign: "center",
               zIndex: 9,
-              width: 320,
-              height: 600,
+              width: 350,
+              height: 350,
             }}
           />
         ) : null}        
