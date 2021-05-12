@@ -10,6 +10,16 @@ import WelcomePages from "../layouts/WelcomePages"
 import { observer } from "mobx-react"
 // import UserStore from "../stores/UserStore"
 import { drawKeypoints } from "../utils/tensorflow-utils"
+import { Button } from "@material-ui/core";
+import { Canvas } from "../components/Canvas/Canvas.component";
+import { OrientationAxis } from "../components/OrientationAxis/OrientationAxis.component";
+
+export class DeviceOrientationInfo {
+  absolute: boolean = false;
+  alpha: number | null = null;
+  beta: number | null = null;
+  gamma: number | null = null;
+}
 
 
 const PoseEstimation = observer(() => {
@@ -21,7 +31,36 @@ const PoseEstimation = observer(() => {
   // const [beta, setBeta] = useState()
   // const [gamma, setGamma] = useState()
 
-  // current image hook
+  // Ios permission  hooks
+    const [permissionGranted, setPermissionGranted] = useState<boolean>(false);
+    const [deviceOrientation, setDeviceOrientation] = useState<DeviceOrientationInfo>();
+  //Ios permission methods
+  function grantPermissionForDeviceOrientation() {
+    if (typeof DeviceOrientationEvent.requestPermission === 'function') {
+        DeviceOrientationEvent.requestPermission()
+            .then(permissionState => {
+                if (permissionState === 'granted') {
+                    setPermissionGranted(true);
+                    window.addEventListener('deviceorientation', handleDeviceOrientationEvent);
+                }
+            })
+            .catch(console.error);
+    } else {
+        // handle regular non iOS 13+ devices
+        setPermissionGranted(true);
+        window.addEventListener('deviceorientation', handleDeviceOrientationEvent);
+    }
+}
+
+function handleDeviceOrientationEvent(ev: DeviceOrientationEvent) {
+    setDeviceOrientation({
+        absolute: ev.absolute,
+        alpha: ev.alpha,
+        beta: ev.beta,
+        gamma: ev.gamma
+    })
+}
+
 
   useEffect(() => {
     if (
@@ -58,8 +97,8 @@ const PoseEstimation = observer(() => {
     ) {
       // Get Video Properties
       const video = camRef.current.camRef.current
-      const videoWidth = 350
-      const videoHeight = 350
+      const videoWidth = 400
+      const videoHeight = 400
 
       // Make detections
       const pose = await net.estimateSinglePose(video)
@@ -92,8 +131,8 @@ const PoseEstimation = observer(() => {
             front={false}
             capture={capture}
             ref={camRef}
-            width="350"
-            height="350"
+            width="400"
+            height="400"
           />
         ) :
         null}
@@ -109,12 +148,19 @@ const PoseEstimation = observer(() => {
               right: 0,
               textAlign: "center",
               zIndex: 9,
-              width: 350,
-              height: 350,
+              width: 400,
+              height: 400,
             }}
           />
         ) : null}        
       </S.PageWrapper>
+      { permissionGranted === true ? 
+              <Canvas width={400} height={400} dpr={1} isAnimating={true}>
+                  <OrientationAxis beta={deviceOrientation?.beta} gamma={deviceOrientation?.gamma}></OrientationAxis>
+              </Canvas>
+ : 
+    <Button onClick={grantPermissionForDeviceOrientation}>Authorize Orientation</Button>
+  }
       
     </WelcomePages>
   )
