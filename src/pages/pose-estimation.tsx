@@ -22,16 +22,13 @@ const PoseEstimation = observer(() => {
   // const [gamma, setGamma] = useState()
 
   // current image hook
-  const [gyroscopeOn, setGyroscopeOn] = useState<boolean>()
 
   useEffect(() => {
     if (
       typeof window !== "undefined" &&
       typeof window.navigator !== "undefined" 
     ) {
-      runPosenet().then(()=>{
-        setGyroscopeOn(true);
-      })
+      runPosenet()
       
     }
   }, [])
@@ -43,8 +40,8 @@ const PoseEstimation = observer(() => {
     const net = await posenet.load({
       architecture: 'MobileNetV1',
       outputStride: 16,
-      inputResolution: { width: 320, height: 320 },
-      multiplier: 0.75,
+      inputResolution: 257,
+      multiplier: 0.5,
     })
 
     setInterval(() => {
@@ -62,7 +59,7 @@ const PoseEstimation = observer(() => {
       // Get Video Properties
       const video = camRef.current.camRef.current
       const videoWidth = 320
-      const videoHeight = 320
+      const videoHeight = 600
 
       // Make detections
       const pose = await net.estimateSinglePose(video)
@@ -96,7 +93,7 @@ const PoseEstimation = observer(() => {
             capture={capture}
             ref={camRef}
             width="320"
-            height="320"
+            height="600"
           />
         ) :
         null}
@@ -113,7 +110,7 @@ const PoseEstimation = observer(() => {
               textAlign: "center",
               zIndex: 9,
               width: 320,
-              height: 320,
+              height: 600,
             }}
           />
         ) : null}        
